@@ -15,6 +15,7 @@ class MyScheduler {
   struct TCB {
     int state, tid;
     char *tname;
+    pthread_t thread;
   };
   MyVector<TCB> process_table;
 }
