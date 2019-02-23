@@ -10,9 +10,6 @@
 
 using namespace std;
 
-MyQueue<int> q;
-
-mutex mtx;  // mutex for critical section
 
 void MySemaphore::down(int Tid) {
     
@@ -23,7 +20,7 @@ void MySemaphore::down(int Tid) {
     }
     else
     {
-        q.enqueue(Tid);
+        sema_queue.enqueue(Tid);
         
         for (int i = 0; i < Scheduler->process_table.getLength(); i++) {
             Scheduler->process_table.at(i)->state = Scheduler->BLOCKED;
@@ -33,9 +30,9 @@ void MySemaphore::down(int Tid) {
 
 void MySemaphore::up() {
     
-    if(!q.isEmpty())
+    if(!sema_queue.isEmpty())
     {
-        q.dequeue();
+        sema_queue.dequeue();
         mtx.unlock();
     }
     else
@@ -56,7 +53,7 @@ void MySemaphore::dump() {
     Scheduler -> yield();
     
     cout << "Sema_queue: ";
-    for(int i = 0 ; i < q.getLength(); i++)
+    for(int i = 0 ; i < sema_queue.getLength(); i++)
     {
         cout << sema_queue.front() << " ";
         sema_queue.dequeue();

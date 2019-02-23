@@ -17,6 +17,7 @@ class MySemaphore {
   int sema_value;
   MyQueue<int> sema_queue;
   MyScheduler *Scheduler;
+  mutex mtx;  // mutex for critical section
 };
 
 #endif
