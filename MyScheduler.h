@@ -11,7 +11,6 @@ class MyScheduler {
   dump();
   garbage_collect();
 
- private:
   struct TCB {
     int state, tid;
     char *tname;
