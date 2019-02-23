@@ -1,6 +1,6 @@
 #ifndef MYQUEUE_H
 #define MYQUEUE_H
-#include "MyNode.h"
+
 #include <iostream>
 
 using namespace std;
@@ -9,47 +9,52 @@ template <typename T>
 class MyQueue {
 
 public:
+	struct node {
+		T data;
+		node *next;
+	};
+
+	node *head, *tail;
+
 	MyQueue() {
 		head = NULL;
 		tail = NULL;
 		length = 0;
 	}
 
-	friend ostream &operator<< (ostream &o, const MyQueue<T> &q) {
-		o << (q.head)->getData();
-		return o;
-	};
-
-	void enqueue(T &newData) {
+	void enqueue(T newData) {
 
 		if (length == 0) {
-			tail = new MyNode<T>(newData);
+			tail = new node;
+			tail->next = NULL;
+			tail->data = newData;
 			head = tail;
 		}
 		else if (length > 0) {
-			tail->setNext(new MyNode<T>(newData));
-			tail = tail->getNext();
+			tail->next = new node;
+			tail = tail->next;
+			tail->data = newData;
 		}
 
 		length++;
 	}
 
-	MyNode<T>* dequeue() {  //potential memory leak
+	T* dequeue() {  //potential memory leak
 	  if (length == 0) {
 			return NULL;
 		}
 		else if (length == 1) {
 			tail = NULL;
 		}
-		MyNode<T> *temp = head;
-		head = head->getNext();
-		temp->setNext(NULL);
+		node *temp = head;
+		head = head->next;
+		temp->next = NULL;
 		length--;
 
 		return temp;
 	}
 
-	MyNode<T>* front() {
+	node* front() {
 		return head;
 	}
 
@@ -71,9 +76,7 @@ public:
 	}
 
 private:
-  MyNode<T> *head, *tail;
   int length;
-
 };
 
 #endif
