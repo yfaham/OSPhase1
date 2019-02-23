@@ -4,7 +4,7 @@ using namespace std;
 
 class MySemaphore {
  public:
-  down();
+  down(int);
   up();
   dump();
 

@@ -15,6 +15,8 @@ public:
 		length = 0;
 	}
 
+    MyNode<T> *head, *tail;
+    
 	friend ostream &operator<< (ostream &o, const MyQueue<T> &q) {
 		o << (q.head)->getData();
 		return o;
@@ -70,8 +72,9 @@ public:
 		clear();
 	}
 
-private:
+//private:
   MyNode<T> *head, *tail;
+ private:
   int length;
 
 };
