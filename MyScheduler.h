@@ -15,7 +15,7 @@ using namespace std;
 class MyScheduler {
  public:
   static const int DEAD = -1, BLOCKED = 0, READY = 1, RUNNING = 2;
-  void create_task(void *(*start_routine) (void *), const char *name, int state);
+  void create_task(void *(*fun) (void *), void *args, const char *name, int state);
   void destroy_task(int id);
   void yield();
   void dump(WINDOW *win);
@@ -24,8 +24,11 @@ class MyScheduler {
 
   struct TCB {
     int state, tid;
-    char *tname;
+    char tname[64];
     pthread_t thread;
   };
   MyVector<TCB> process_table;
+
+private:
+  //run_task(void *(*fun) (void *), void *args, const char *name, int state);
 };
