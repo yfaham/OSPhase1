@@ -14,7 +14,7 @@ public:
 		length = 0;
 	}
 
-	bool insert(T &newData, int position) {
+	bool insert(T newData, int position) {
 	  if (position < 0 || position > length)
 	    return false;
 
@@ -183,7 +183,7 @@ public:
 	    temp = temp->next;
 	    i++;
 	  }
-	  return temp;
+	  return &(temp->data);
 	}
 
 	int getLength() {
@@ -209,7 +209,7 @@ private:
 	};
 	node *head, *tail;
 	
-  int length = 0;
+  int length;
 
 };
 
