@@ -51,11 +51,11 @@ public:
 		temp->next = NULL;
 		length--;
 
-		return temp;
+		return temp->data;
 	}
 
-	node* front() {
-		return head;
+	T* front() {
+		return head->data;
 	}
 
 	int getLength() {

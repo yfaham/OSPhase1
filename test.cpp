@@ -19,7 +19,7 @@ int main() {
   }
 
   for (int i = 0; i < 3; i++) {
-    cout << *(q.dequeue(i)) << endl;
+    cout << *(q.dequeue()) << endl;
   }
   //  MyScheduler sched;
   //const char *c = "kk";
