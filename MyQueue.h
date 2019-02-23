@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #ifndef MYQUEUE_H
 #define MYQUEUE_H
 
@@ -52,11 +51,11 @@ public:
 		temp->next = NULL;
 		length--;
 
-		return temp->data;
+		return &(temp->data);
 	}
 
 	T* front() {
-		return head->data;
+		return &(head->data);
 	}
 
 	int getLength() {
