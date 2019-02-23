@@ -1,3 +1,7 @@
+#ifndef MYSCHEDULER_H
+#define MYSCHEDULER_H
+
+#define _GNU_SOURCE
 #include "MyVector.h"
 #include <iostream>
 #include <pthread.h>
@@ -32,3 +36,5 @@ class MyScheduler {
 private:
   //run_task(void *(*fun) (void *), void *args, const char *name, int state);
 };
+
+#endif
