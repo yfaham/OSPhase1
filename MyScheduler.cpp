@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include "MyScheduler.h"
 #include <iostream>
 #include <pthread.h>
