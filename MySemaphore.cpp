@@ -17,15 +17,19 @@ MySemaphore::down(int Tid) {
         sema_value--;
     else
     {
-        push(Tid);
-        Myschedule->(setState, Tid, Block);
-        SchedPtr->process_table.at(index)->state
+        
+        q.push(Tid);
+        //Myschedule->(setState, Tid, Block);
+        //SchedPtr->process_table.at(index)->state
+        
         
     }
 }
 
 MySemaphore::up() {
     sema_value++;
+    q.pop();
+    
 }
 
 MySemaphore::dump() {
