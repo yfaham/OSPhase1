@@ -1,3 +1,5 @@
 test.cpp
 a.out
 MyNode.h
+MySemaphore.o
+MyScheduler.o
