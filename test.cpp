@@ -8,6 +8,10 @@ struct TCB {
   int stuff;
 };
 
+void yolo(void) {
+  cout << "yolo" << endl;
+}
+
 int main() {
   MyScheduler sched;
   const char *c = "kk";
