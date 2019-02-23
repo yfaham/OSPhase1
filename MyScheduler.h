@@ -1,6 +1,7 @@
 #ifndef MYSCHEDULER_H
 #define MYSCHEDULER_H
 
+#define _OPEN_THREADS
 #define _GNU_SOURCE
 #include "MyVector.h"
 #include <iostream>

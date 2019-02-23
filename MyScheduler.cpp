@@ -1,3 +1,4 @@
+#define _OPEN_THREADS
 #define _GNU_SOURCE
 #include "MyScheduler.h"
 #include <iostream>
