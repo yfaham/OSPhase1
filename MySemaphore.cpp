@@ -26,31 +26,30 @@ void MySemaphore::down(int Tid) {
     
     if(sema_value == 1)
     {
-        sema_value--;
+        sema_value = 0;
         mtx.lock();
      
     }
     else
     {
-        Scheduler-> yield(Tid);
-        sema_queue.enqueue(Tid);
+      Scheduler->yield(Tid);
+      sema_queue.enqueue(Tid);
         
     }
 }
 
 void MySemaphore::up() {
-    
     if(!sema_queue.isEmpty())
     {
 	int *intptr = sema_queue.dequeue();
-	Scheduler->change_state(*intptr, MyScheduler::READY);
-        mtx.unlock();
+	if (intptr)
+	  Scheduler->change_state(*intptr, MyScheduler::READY);
     }
     else
     {
-        mtx.unlock();
-        sema_value++;
+        sema_value = 1;
     }
+    mtx.unlock();
 }
 
 void MySemaphore::dump(int level) {
