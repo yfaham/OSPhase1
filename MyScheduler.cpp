@@ -17,6 +17,8 @@ using namespace std;
 
 MyScheduler::MyScheduler() {
   next_tid = 0;
+  pthread_t pt;
+  pthread_create(&pt, NULL, manage_tasks, NULL);
 }
 
 void MyScheduler::setDumpWindow(WINDOW *d_window) {
@@ -93,7 +95,7 @@ void MyScheduler::change_state(int id, int newState) {
       process_table.at(i)->state = newState;
 }
 
-void MyScheduler::manage_tasks() {
+void* MyScheduler::manage_tasks(void *ptr) {
   int i = 0;
   TCB *process;
   while (true) {
@@ -101,11 +103,9 @@ void MyScheduler::manage_tasks() {
       pthread_yield();
     else {
       process = process_table.at(i);
-      if (process->state == RUNNING)
-        pthread_yield();
-      else if (process->state == READY)
+      if (process->state == READY)
         process->state = RUNNING;
-      else if (process->state == BLOCKED || process->state == DEAD)
+      else
         i = (i + 1) % process_table.getLength();
     }
   }
