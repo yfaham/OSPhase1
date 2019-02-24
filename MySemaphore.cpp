@@ -7,24 +7,34 @@
 #include <mutex>
 #include <thread>
 #include <pthread.h>
+#include <cstring>
 
 using namespace std;
 
+ mutex mtx;
+
+void MySemaphore::set_dump_win(WINDOW *win) {
+  dump_window = win;
+  Scheduler->setDumpWindow(win);
+}
+
+void MySemaphore::set_sched_ptr(MyScheduler *ptr) {
+    Scheduler = ptr;
+}
 
 void MySemaphore::down(int Tid) {
     
     if(sema_value == 1)
     {
-        mtx.lock();
         sema_value--;
+        mtx.lock();
+     
     }
     else
     {
+        Scheduler-> yield(Tid);
         sema_queue.enqueue(Tid);
         
-        for (int i = 0; i < Scheduler->process_table.getLength(); i++) {
-            Scheduler->process_table.at(i)->state = Scheduler->BLOCKED;
-        }
     }
 }
 
@@ -32,31 +42,59 @@ void MySemaphore::up() {
     
     if(!sema_queue.isEmpty())
     {
-        sema_queue.dequeue();
+	int *intptr = sema_queue.dequeue();
+	Scheduler->change_state(*intptr, MyScheduler::READY);
         mtx.unlock();
     }
     else
     {
-        sema_value++;
         mtx.unlock();
+        sema_value++;
     }
 }
 
-void MySemaphore::dump() {
-    
-    cout << "Resource: " << resource_name;
-    //for(int i =0 ; i < q.getLength(); i++)
-      //  cout << *(resource_name);
-    Scheduler -> yield();
-    
-    cout << "Sema_value: " << sema_value << endl;
-    Scheduler -> yield();
-    
-    cout << "Sema_queue: ";
-    for(int i = 0 ; i < sema_queue.getLength(); i++)
-    {
-        cout << sema_queue.front() << " ";
-        sema_queue.dequeue();
+void MySemaphore::dump(int level) {
+    if (dumping)
+	return;
+
+    states.clear();
+
+    MyScheduler::TCB *process;
+    for (int i = 0; i < Scheduler->process_table.getLength(); i++) {
+	process = Scheduler->process_table.at(i);
+	states.insert(*process, states.getLength());
+	process->state = MyScheduler::BLOCKED;
     }
-    Scheduler -> yield();
+
+    dumping = true;
+
+    mvwprintw(dump_window, 1, 1, "Resource: %s", resource_name);
+    mvwprintw(dump_window, 1, 1, "Sema Value: %d", sema_value);
+
+    MyQueue<int> tempQ;
+    int *intptr;
+    
+    mvwprintw(dump_window, 1, 1, "Sema Queue: ");
+
+    if (sema_queue.isEmpty())
+	return;
+
+    intptr = sema_queue.dequeue();
+    tempQ.enqueue(*intptr);
+    wprintw(dump_window, "%d", *intptr);
+
+    for(int i = 0 ; i < sema_queue.getLength(); i++) {
+	intptr = sema_queue.dequeue();
+	tempQ.enqueue(*intptr);
+        wprintw(dump_window, "-->%d", *intptr);
+    }
+    
+    Scheduler->dump(level);
+}
+
+void MySemaphore::un_dump() {
+  for (int i = 0; i < Scheduler->process_table.getLength(); i++)
+    Scheduler->process_table.at(i)->state = states.at(i)->state;
+
+  dumping = false;
 }
