@@ -28,6 +28,8 @@ public:
   void dump(int level);
   void garbage_collect();
   void change_state(int id, int state);
+  void run_next(int id);
+  // static void start_manage_tasks(void *ptr);
 
   struct TCB {
     int state, tid;
@@ -40,7 +42,7 @@ public:
 private:
   int next_tid;
   WINDOW *dump_window;
-  void* manage_tasks(void *ptr);
+  // static void* manage_tasks(void *ptr);
   //run_task(void *(*fun) (void *), void *args, const char *name, int state);
 };
 

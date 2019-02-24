@@ -17,18 +17,21 @@ using namespace std;
 
 MyScheduler::MyScheduler() {
   next_tid = 0;
-  pthread_t pt;
-  pthread_create(&pt, NULL, manage_tasks, NULL);
 }
 
 void MyScheduler::setDumpWindow(WINDOW *d_window) {
   dump_window = d_window;
 }
 
+// void MyScheduler::start_manage_tasks(void *ptr) {
+//   pthread_t pt;
+//   pthread_create(&pt, NULL, manage_tasks, ptr);
+// }
+
 void MyScheduler::create_task(void *(*fun) (void *), WINDOW *win, const char *name, int state) {
   process_table.insert(*(new TCB), process_table.getLength());
   TCB *process = process_table.at(process_table.getLength() - 1);
-  process->state = BLOCKED;
+  process->state = state;
   process->tid = next_tid++;
   process->win_ptr = win;
   strcpy(process->tname, name);
@@ -64,16 +67,16 @@ void MyScheduler::dump(int level) {
     if (level >= 2) {
       switch (process->state) {
         case DEAD:
-        strcat(info, "state = DEAD");
+        strcat(info, ", state = DEAD");
         break;
         case BLOCKED:
-        strcat(info, "state = BLOCKED");
+        strcat(info, ", state = BLOCKED");
         break;
         case READY:
-        strcat(info, "state = READY");
+        strcat(info, ", state = READY");
         break;
         case RUNNING:
-        strcat(info, "state = RUNNING");
+        strcat(info, ", state = RUNNING");
         break;
       }
     }
@@ -95,18 +98,32 @@ void MyScheduler::change_state(int id, int newState) {
       process_table.at(i)->state = newState;
 }
 
-void* MyScheduler::manage_tasks(void *ptr) {
-  int i = 0;
-  TCB *process;
-  while (true) {
-    if (process_table.isEmpty())
-      pthread_yield();
-    else {
-      process = process_table.at(i);
-      if (process->state == READY)
-        process->state = RUNNING;
-      else
-        i = (i + 1) % process_table.getLength();
+void MyScheduler::run_next(int id) {
+  int i;
+  for (i = 0; i < process_table.getLength(); i++) {
+    if (process_table.at(i)->tid == id) {
+      process_table.at(i)->state = BLOCKED;
+      i = (i + 1) % process_table.getLength();
+      break;
     }
   }
+  process_table.at(i)->state = RUNNING;
 }
+
+// void* MyScheduler::manage_tasks(void *ptr) {
+//   int i = 0;
+//   MyScheduler *sched_ptr = (MyScheduler*) ptr;
+//   TCB *process;
+//   while (true) {
+//     if (!sched_ptr->process_table.isEmpty()) {
+//       process = sched_ptr->process_table.at(i);
+//
+//       if (process->state == READY)
+//         process->state = RUNNING;
+//       else
+//         i = (i + 1) % sched_ptr->process_table.getLength();
+//     }
+//     else pthread_yield();
+//   }
+//   return NULL;
+// }
