@@ -40,7 +40,7 @@ public:
 private:
   int next_tid;
   WINDOW *dump_window;
-  void manage_tasks(void *ptr);
+  void* manage_tasks(void *ptr);
   //run_task(void *(*fun) (void *), void *args, const char *name, int state);
 };
 
