@@ -1,3 +1,6 @@
+//************************************************************************************
+//Purpose : To control access of resources provided
+//************************************************************************************
 #include "MyQueue.h"
 #include "MySemaphore.h"
 #include <cstdio>
@@ -13,15 +16,31 @@ using namespace std;
 
  mutex mtx;
 
+//************************************************************************************
+//Purpose: Creates a dump window.
+//Input  : *win
+//Output : none
+//************************************************************************************
 void MySemaphore::set_dump_win(WINDOW *win) {
   dump_window = win;
   Scheduler->setDumpWindow(win);
 }
 
+//************************************************************************************
+//Purpose: Scheduler has the same address as ptr, to have the same access.
+//Input  : *ptr
+//Output : none
+//************************************************************************************
 void MySemaphore::set_sched_ptr(MyScheduler *ptr) {
     Scheduler = ptr;
 }
 
+//************************************************************************************
+//Purpose : allows states to be blocked if they were ready otherwise it the Tid
+//          control is let go, so the next tid can begin.
+//Input   : Tid - thread id.
+//Output  : none
+//************************************************************************************
 void MySemaphore::down(int Tid) {
     
     if(sema_value == 1)
@@ -38,6 +57,11 @@ void MySemaphore::down(int Tid) {
     }
 }
 
+//************************************************************************************
+//Purpose: Sets state to ready when queue is not empty, outherwise it is blocked.
+//Input  : none
+//Output : none
+//************************************************************************************
 void MySemaphore::up() {
     if(!sema_queue.isEmpty())
     {
@@ -52,6 +76,11 @@ void MySemaphore::up() {
     mtx.unlock();
 }
 
+//************************************************************************************
+//Purpose  : Displays TCB structure values in a nice format.
+//Input    : level - gets called by another class to display the process state.
+//Output   : none.
+//************************************************************************************
 void MySemaphore::dump(int level) {
     if (dumping)
 	return;
@@ -91,6 +120,11 @@ void MySemaphore::dump(int level) {
     Scheduler->dump(level);
 }
 
+//************************************************************************************
+//Purpose: Assings the next state value.
+//Input  : None
+//Output : None
+//************************************************************************************
 void MySemaphore::un_dump() {
   for (int i = 0; i < Scheduler->process_table.getLength(); i++)
     Scheduler->process_table.at(i)->state = states.at(i)->state;
