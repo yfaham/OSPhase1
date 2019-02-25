@@ -3,3 +3,5 @@ a.out
 MyNode.h
 MySemaphore.o
 MyScheduler.o
+MyScheduler.h.gch
+MySemaphore.h.gch
