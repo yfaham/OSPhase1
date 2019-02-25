@@ -13,12 +13,13 @@ public:
 		tail = NULL;
 		length = 0;
 	}
-    
-    //************************************************************************************
-    //Purpose: inserts new data
-    //Input  : newData, position
-    //Output : true
-    //************************************************************************************
+
+	/********************************************************************
+        Purpose: Inserts newData in the linked list at position.
+                 Returns true on success
+        Input: newData, position
+        Output: True on success, false otherwise.
+	********************************************************************/
 	bool insert(T newData, int position) {
 	  if (position < 0 || position > length)
 	    return false;
@@ -61,6 +62,11 @@ public:
 	  return true;
 	}
 
+	/********************************************************************
+        Purpose: Deletes nodes starting from start up until last, inclusive.
+        Input: start, last.
+        Output: none.
+	********************************************************************/
 	void remove_index(int start, int last) {
 	  if (last < start || length < 1)
 	    return;
@@ -102,11 +108,12 @@ public:
 	  if (temp == NULL)
 	    tail = prev;
 	}
-    //************************************************************************************
-    //Purpose: removes elements up to when it is less than the size
-    //Input  : start, size
-    //Output : none
-    //************************************************************************************
+
+	/********************************************************************
+        Purpose: Deletes nodes starting from start, up to (size) number of nodes
+        Input: newData, position
+        Output: True on success, false otherwise.
+	********************************************************************/
 	void remove_size(int start, int size) {
 	  if (size < 1 || length < 1)
 	    return;
@@ -149,15 +156,8 @@ public:
 
 	  if (temp == NULL)
 	    tail = prev;
-    }
-    
-    //************************************************************************************
-    //Purpose: When position is 0, it deletes the tmp var and goes to next position then
-    //         shrink the size. The code gets previous element and has it point to the element
-    //         next to tmp, after that tmp get deleted and vector gets resized.
-    //Input  : position
-    //Output : none
-    //************************************************************************************
+	}
+
 	void remove(int position) {
 	  if (position < 0 || length < 1)
 	    return;

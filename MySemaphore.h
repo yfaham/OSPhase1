@@ -10,7 +10,6 @@ using namespace std;
 //************************************************************************************
 //Purpose : To control access of resources provided in the window.
 //************************************************************************************
-
 class MySemaphore {
  public:
   MySemaphore (char *name) 

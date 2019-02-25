@@ -1,4 +1,3 @@
-
 #include "MyQueue.h"
 #include "MySemaphore.h"
 #include <cstdio>
@@ -75,7 +74,7 @@ void MySemaphore::up() {
 }
 
 //************************************************************************************
-//Purpose  : Displays TCB structure values in a nice format.
+//Purpose  : Displays TCB structure values in a nice format on a window.
 //Input    : level - gets called by another class to display the process state.
 //Output   : none.
 //************************************************************************************
@@ -94,25 +93,24 @@ void MySemaphore::dump(int level) {
 
     dumping = true;
 
-    mvwprintw(dump_window, 1, 1, "Resource: %s", resource_name);
-    mvwprintw(dump_window, 1, 1, "Sema Value: %d", sema_value);
+    wprintw(dump_window, " \nResource: %s\n", resource_name);
+    wprintw(dump_window, " Sema Value: %d\n", sema_value);
 
     MyQueue<int> tempQ;
     int *intptr;
     
-    mvwprintw(dump_window, 1, 1, "Sema Queue: ");
+    wprintw(dump_window, " Sema Queue: \n");
 
-    if (sema_queue.isEmpty())
-	return;
-
-    intptr = sema_queue.dequeue();
-    tempQ.enqueue(*intptr);
-    wprintw(dump_window, "%d", *intptr);
-
-    for(int i = 0 ; i < sema_queue.getLength(); i++) {
+    if (!sema_queue.isEmpty()) {
+      intptr = sema_queue.dequeue();
+      tempQ.enqueue(*intptr);
+      wprintw(dump_window, "%d", *intptr);
+      
+      for(int i = 0 ; i < sema_queue.getLength(); i++) {
 	intptr = sema_queue.dequeue();
 	tempQ.enqueue(*intptr);
         wprintw(dump_window, "-->%d", *intptr);
+      }
     }
     
     Scheduler->dump(level);
@@ -123,6 +121,7 @@ void MySemaphore::dump(int level) {
 //Input  : None
 //Output : None
 //************************************************************************************
+
 void MySemaphore::un_dump() {
   for (int i = 0; i < Scheduler->process_table.getLength(); i++)
     Scheduler->process_table.at(i)->state = states.at(i)->state;

@@ -21,6 +21,7 @@ public:
 		tail = NULL;
 		length = 0;
 	}
+
     //************************************************************************************
     //Purpose: inserts ne data in the queue
     //Input  : newData
@@ -42,13 +43,13 @@ public:
 
 		length++;
 	}
-
+    
     //************************************************************************************
     //Purpose: removes data from the queue
     //Input  : none
     //Output : returns data which temp points at.
     //************************************************************************************
-	T* dequeue() {  //potential memory leak
+	T* dequeue() {
 	  if (length == 0) {
 			return NULL;
 		}

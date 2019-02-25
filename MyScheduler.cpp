@@ -19,9 +19,12 @@ MyScheduler::MyScheduler() {
   next_tid = 0;
 }
 
-
 void MyScheduler::setDumpWindow(WINDOW *d_window) {
   dump_window = d_window;
+}
+
+void MyScheduler::setLogWindow(WINDOW *log_win) {
+  log_window = log_win;
 }
 
 // void MyScheduler::start_manage_tasks(void *ptr) {
@@ -29,15 +32,15 @@ void MyScheduler::setDumpWindow(WINDOW *d_window) {
 //   pthread_create(&pt, NULL, manage_tasks, ptr);
 // }
 
-
-void MyScheduler::create_task(void *(*fun) (void *), WINDOW *win, const char *name, int state) {
+void MyScheduler::create_task(pthread_t *pt_t_ptr, void *(*fun) (void *), WINDOW *win, const char *name, int state) {
   process_table.insert(*(new TCB), process_table.getLength());
   TCB *process = process_table.at(process_table.getLength() - 1);
   process->state = state;
   process->tid = next_tid++;
   process->win_ptr = win;
+  process->log_win_ptr = log_window;
   strcpy(process->tname, name);
-  pthread_create(&(process->thread), NULL, fun, process);
+  pthread_create(pt_t_ptr, NULL, fun, process);
 }
 
 //************************************************************************************
@@ -53,6 +56,7 @@ void MyScheduler::destroy_task(int id) {
     }
   }
 }
+
 //************************************************************************************
 //Purpose: To set the id to blocked
 //Input  : id
@@ -70,36 +74,39 @@ void MyScheduler::yield(int id) {
 //Output : none
 //************************************************************************************
 void MyScheduler::dump(int level) {
+  int console_tid = -1;
   TCB *process;
   for (int i = 0; i < process_table.getLength(); i++) {
-    char info[64] = "Name = ";
     process = process_table.at(i);
-    strcat(info, process->tname);
+    wprintw(dump_window, " Name = %s", process->tname);
+
+    if (!strcmp(process->tname, "Console\0"))
+      console_tid = process->tid;
+
     if (level >= 1) {
-      char tid[6] = {0};
-      sprintf(tid, ", TID = %d", process->tid);
-      strcat(info, tid);
+      wprintw(dump_window, ", TID = %d", process->tid);
     }
     if (level >= 2) {
       switch (process->state) {
-        case DEAD:
-        strcat(info, ", state = DEAD");
+      case DEAD:
+	wprintw(dump_window, ", state = DEAD");
         break;
-        case BLOCKED:
-        strcat(info, ", state = BLOCKED");
+      case BLOCKED:
+	wprintw(dump_window, ", state = BLOCKED");
         break;
-        case READY:
-        strcat(info, ", state = READY");
+      case READY:
+	wprintw(dump_window, ", state = READY");
         break;
-        case RUNNING:
-        strcat(info, ", state = RUNNING");
+      case RUNNING:
+	wprintw(dump_window, ", state = RUNNING");
         break;
       }
     }
-    mvwprintw(dump_window, 1, 1, info);
+    wprintw(dump_window, "\n");
     box(dump_window, 0, 0);
-    wrefresh(dump_window);
+    wrefresh(dump_window); 
   }
+  change_state(console_tid, RUNNING);
 }
 
 //************************************************************************************
