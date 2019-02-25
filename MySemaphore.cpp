@@ -1,6 +1,4 @@
-//************************************************************************************
-//Purpose : To control access of resources provided
-//************************************************************************************
+
 #include "MyQueue.h"
 #include "MySemaphore.h"
 #include <cstdio>

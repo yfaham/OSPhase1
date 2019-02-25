@@ -21,7 +21,11 @@ public:
 		tail = NULL;
 		length = 0;
 	}
-
+    //************************************************************************************
+    //Purpose: inserts ne data in the queue
+    //Input  : newData
+    //Output : none
+    //************************************************************************************
 	void enqueue(T newData) {
 
 		if (length == 0) {
@@ -39,6 +43,11 @@ public:
 		length++;
 	}
 
+    //************************************************************************************
+    //Purpose: removes data from the queue
+    //Input  : none
+    //Output : returns data which temp points at.
+    //************************************************************************************
 	T* dequeue() {  //potential memory leak
 	  if (length == 0) {
 			return NULL;
@@ -66,6 +75,11 @@ public:
 		return length == 0;
 	}
 
+    //************************************************************************************
+    //Purpose: removes all the data in the queue as long the length is bigger than 0.
+    //Input  : none
+    //Output : none
+    //************************************************************************************
 	void clear() {
 		while (length > 0)
 			dequeue();

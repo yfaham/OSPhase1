@@ -19,6 +19,7 @@ MyScheduler::MyScheduler() {
   next_tid = 0;
 }
 
+
 void MyScheduler::setDumpWindow(WINDOW *d_window) {
   dump_window = d_window;
 }
@@ -27,6 +28,7 @@ void MyScheduler::setDumpWindow(WINDOW *d_window) {
 //   pthread_t pt;
 //   pthread_create(&pt, NULL, manage_tasks, ptr);
 // }
+
 
 void MyScheduler::create_task(void *(*fun) (void *), WINDOW *win, const char *name, int state) {
   process_table.insert(*(new TCB), process_table.getLength());
@@ -38,6 +40,11 @@ void MyScheduler::create_task(void *(*fun) (void *), WINDOW *win, const char *na
   pthread_create(&(process->thread), NULL, fun, process);
 }
 
+//************************************************************************************
+//Purpose: marks the id as dead
+//Input  : id
+//Output : none
+//************************************************************************************
 void MyScheduler::destroy_task(int id) {
   for (int i = 0; i < process_table.getLength(); i++) {
     if (process_table.at(i)->tid == id) {
@@ -46,13 +53,22 @@ void MyScheduler::destroy_task(int id) {
     }
   }
 }
-
+//************************************************************************************
+//Purpose: To set the id to blocked
+//Input  : id
+//Output : none
+//************************************************************************************
 void MyScheduler::yield(int id) {
   for (int i = 0; i < process_table.getLength(); i++)
     if (process_table.at(i)->tid == id)
       process_table.at(i)->state = BLOCKED;
 }
 
+//************************************************************************************
+//Purpose: Prints the dump, content on the window.
+//Input  : level
+//Output : none
+//************************************************************************************
 void MyScheduler::dump(int level) {
   TCB *process;
   for (int i = 0; i < process_table.getLength(); i++) {
@@ -86,18 +102,33 @@ void MyScheduler::dump(int level) {
   }
 }
 
+//************************************************************************************
+//Purpose: Removes status that is arked dead
+//Input  : none
+//Output : none
+//************************************************************************************
 void MyScheduler::garbage_collect() {
   for (int i = 0; i < process_table.getLength(); i++)
     if (process_table.at(i)->state == DEAD)
       process_table.remove(i);
 }
 
+//************************************************************************************
+//Purpose: changes state of the id passed in.
+//Input  : id, newState.
+//Output : none
+//************************************************************************************
 void MyScheduler::change_state(int id, int newState) {
   for (int i = 0; i < process_table.getLength(); i++)
     if (process_table.at(i)->tid == id)
       process_table.at(i)->state = newState;
 }
 
+//************************************************************************************
+//Purpose: Runs the next id by implicitly blocking the currrent id
+//Input  : id
+//Output : none
+//************************************************************************************
 void MyScheduler::run_next(int id) {
   int i;
   for (i = 0; i < process_table.getLength(); i++) {
