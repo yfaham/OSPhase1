@@ -32,6 +32,15 @@ void MyScheduler::setLogWindow(WINDOW *log_win) {
 //   pthread_create(&pt, NULL, manage_tasks, ptr);
 // }
 
+//************************************************************************************
+//Purpose: Starts the task passed in the parameter as a thread
+//Input  : pt_t_ptr: thread_t address
+//         (*fun): pointer to the passed funtion
+//         win: pointer to the corresponding window
+//         name: of the thread
+//         state: initial state of the thread
+//Output : none
+//************************************************************************************
 void MyScheduler::create_task(pthread_t *pt_t_ptr, void *(*fun) (void *), WINDOW *win, const char *name, int state) {
   process_table.insert(*(new TCB), process_table.getLength());
   TCB *process = process_table.at(process_table.getLength() - 1);
@@ -44,7 +53,7 @@ void MyScheduler::create_task(pthread_t *pt_t_ptr, void *(*fun) (void *), WINDOW
 }
 
 //************************************************************************************
-//Purpose: marks the id as dead
+//Purpose: marks the thread with tid == id as DEAD
 //Input  : id
 //Output : none
 //************************************************************************************
@@ -58,7 +67,7 @@ void MyScheduler::destroy_task(int id) {
 }
 
 //************************************************************************************
-//Purpose: To set the id to blocked
+//Purpose: To set the thread with tid == id to BLOCKED
 //Input  : id
 //Output : none
 //************************************************************************************
@@ -69,7 +78,7 @@ void MyScheduler::yield(int id) {
 }
 
 //************************************************************************************
-//Purpose: Prints the dump, content on the window.
+//Purpose: Prints the dump, content on the window, with details based on level.
 //Input  : level
 //Output : none
 //************************************************************************************
@@ -104,13 +113,13 @@ void MyScheduler::dump(int level) {
     }
     wprintw(dump_window, "\n");
     box(dump_window, 0, 0);
-    wrefresh(dump_window); 
+    wrefresh(dump_window);
   }
   change_state(console_tid, RUNNING);
 }
 
 //************************************************************************************
-//Purpose: Removes status that is arked dead
+//Purpose: Removes threads that are marked DEAD
 //Input  : none
 //Output : none
 //************************************************************************************
@@ -121,7 +130,7 @@ void MyScheduler::garbage_collect() {
 }
 
 //************************************************************************************
-//Purpose: changes state of the id passed in.
+//Purpose: changes state of the thread with tid == id passed in.
 //Input  : id, newState.
 //Output : none
 //************************************************************************************

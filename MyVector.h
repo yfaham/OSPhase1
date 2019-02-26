@@ -57,7 +57,7 @@ public:
 	      prev->next = newNode;
 	    }
 	  }
-	  
+
 	  length++;
 	  return true;
 	}
@@ -112,7 +112,7 @@ public:
 	/********************************************************************
         Purpose: Deletes nodes starting from start, up to (size) number of nodes
         Input: newData, position
-        Output: True on success, false otherwise.
+        Output: none
 	********************************************************************/
 	void remove_size(int start, int size) {
 	  if (size < 1 || length < 1)
@@ -158,6 +158,11 @@ public:
 	    tail = prev;
 	}
 
+  /********************************************************************
+        Purpose: Deletes a single node at position
+        Input: position
+        Output: none
+	********************************************************************/
 	void remove(int position) {
 	  if (position < 0 || length < 1)
 	    return;
@@ -192,6 +197,11 @@ public:
 	    tail = prev;
 	}
 
+  /********************************************************************
+        Purpose: Returns a pointer to TCB at position
+        Input: position
+        Output: Pointer to TCB.
+	********************************************************************/
 	T* at(int position) {
 	  node* temp = head;
 	  int i = 0;
@@ -202,14 +212,29 @@ public:
 	  return &(temp->data);
 	}
 
+  /********************************************************************
+        Purpose: length getter
+        Input: none
+        Output: length value
+	********************************************************************/
 	int getLength() {
 	  return length;
 	}
 
+  /********************************************************************
+        Purpose: Checks if the linked list is empty
+        Input: none
+        Output: True if empty, false otherwise.
+	********************************************************************/
 	bool isEmpty() {
 	  return length == 0;
 	}
 
+  /********************************************************************
+        Purpose: Empties the entire linked list
+        Input: none
+        Output: none
+	********************************************************************/
 	void clear() {
 	  remove_size(0, length);
 	}
@@ -224,7 +249,7 @@ private:
 	  node *next;
 	};
 	node *head, *tail;
-	
+
   int length;
 
 };

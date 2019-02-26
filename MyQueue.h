@@ -23,7 +23,7 @@ public:
 	}
 
     //************************************************************************************
-    //Purpose: inserts ne data in the queue
+    //Purpose: inserts newData in the queue
     //Input  : newData
     //Output : none
     //************************************************************************************
@@ -43,11 +43,11 @@ public:
 
 		length++;
 	}
-    
+
     //************************************************************************************
     //Purpose: removes data from the queue
     //Input  : none
-    //Output : returns data which temp points at.
+    //Output : returns a pointer to the data that was at the head.
     //************************************************************************************
 	T* dequeue() {
 	  if (length == 0) {

@@ -14,7 +14,7 @@ using namespace std;
  mutex mtx;
 
 //************************************************************************************
-//Purpose: Creates a dump window.
+//Purpose: Assigns the pointer to dump window.
 //Input  : *win
 //Output : none
 //************************************************************************************
@@ -33,29 +33,30 @@ void MySemaphore::set_sched_ptr(MyScheduler *ptr) {
 }
 
 //************************************************************************************
-//Purpose : allows states to be blocked if they were ready otherwise it the Tid
-//          control is let go, so the next tid can begin.
+//Purpose : locks the mutex if the shared resource was free,
+//          otherwise the calling thread is blocked and enqueued.
 //Input   : Tid - thread id.
 //Output  : none
 //************************************************************************************
 void MySemaphore::down(int Tid) {
-    
+
     if(sema_value == 1)
     {
         sema_value = 0;
         mtx.lock();
-     
+
     }
     else
     {
       Scheduler->yield(Tid);
       sema_queue.enqueue(Tid);
-        
+
     }
 }
 
 //************************************************************************************
 //Purpose: Sets state to ready when queue is not empty, outherwise it is blocked.
+//         it also umlocks the mutex.
 //Input  : none
 //Output : none
 //************************************************************************************
@@ -98,26 +99,26 @@ void MySemaphore::dump(int level) {
 
     MyQueue<int> tempQ;
     int *intptr;
-    
+
     wprintw(dump_window, " Sema Queue: \n");
 
     if (!sema_queue.isEmpty()) {
       intptr = sema_queue.dequeue();
       tempQ.enqueue(*intptr);
       wprintw(dump_window, "%d", *intptr);
-      
+
       for(int i = 0 ; i < sema_queue.getLength(); i++) {
 	intptr = sema_queue.dequeue();
 	tempQ.enqueue(*intptr);
         wprintw(dump_window, "-->%d", *intptr);
       }
     }
-    
+
     Scheduler->dump(level);
 }
 
 //************************************************************************************
-//Purpose: Assings the next state value.
+//Purpose: Assings the state values before dump was called.
 //Input  : None
 //Output : None
 //************************************************************************************
