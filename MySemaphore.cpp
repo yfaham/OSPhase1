@@ -12,7 +12,7 @@
 using namespace std;
 
 mutex mtx;
-MySemaphore.obj;
+MySemaphore obj();
 
 //************************************************************************************
 //Purpose: Assigns the pointer to dump window.
@@ -41,9 +41,9 @@ void MySemaphore::set_sched_ptr(MyScheduler *ptr) {
 //************************************************************************************
 void MySemaphore::down(int Tid) {
     
-    if(obj.sema_value() == 1)
+    if(sema_value == 1)
     {
-        obj.sema_value(0);
+        sema_value = 0;
         mtx.lock();
         
     }
@@ -70,7 +70,7 @@ void MySemaphore::up() {
     }
     else
     {
-        obj.sema_value(1);
+        sema_value = 1;
     }
     mtx.unlock();
 }
@@ -91,7 +91,7 @@ void MySemaphore::dump(int level) {
     dumping = true;
     
     wprintw(dump_window, " \nResource: %s\n", resource_name);
-    wprintw(dump_window, " Sema Value: %d\n", obj.sema_value());
+    wprintw(dump_window, " Sema Value: %d\n", sema_value);
     
     MyQueue<int> tempQ;
     int *intptr;

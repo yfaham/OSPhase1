@@ -14,15 +14,14 @@ class MySemaphore {
 public:
     MySemaphore (char *name)
     {
-        this->sema_value = 1;
         strcpy(resource_name, name);
         this->sema_queue;
         dumping = false;
     }
     
-    MySemaphore (int sema_value)
+    MySemaphore()
     {
-        this->sema_value = sema_value;
+        this->sema_value = 1;
     }
     void set_dump_win(WINDOW *win);
     void set_sched_ptr(MyScheduler *ptr);
@@ -33,6 +32,7 @@ public:
     
 private:
     char resource_name[64];
+    int sema_value;
     MyQueue<int> sema_queue;
     MyScheduler *Scheduler;
     MyVector<MyScheduler::TCB> states;
