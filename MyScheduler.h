@@ -22,6 +22,7 @@ public:
   MyScheduler();
   void setDumpWindow(WINDOW *d_window);
   void setLogWindow(WINDOW *log_win);
+  //void start_manage_tasks(void *ptr)
   static const int DEAD = -1, BLOCKED = 0, READY = 1, RUNNING = 2;
   void create_task(pthread_t *pt_t_ptr, void *(*fun) (void *), WINDOW *win, const char *name, int state);
   void destroy_task(int id);
@@ -43,6 +44,8 @@ private:
   int next_tid;
   WINDOW *dump_window;
   WINDOW *log_window;
+
+  //static void* manage_tasks(void *ptr);
 };
 
 #endif
