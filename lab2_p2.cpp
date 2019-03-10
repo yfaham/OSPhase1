@@ -12,6 +12,11 @@ using namespace std;
 MyScheduler sched;
 MySemaphore sema("Screen Sema");
 
+//************************************************************************************
+//Purpose: Creates window
+//Input  : height, width, starty, startx
+//Output : none
+//************************************************************************************
 WINDOW *create_window(int height, int width, int starty, int startx);
 void write_window(WINDOW *win, const char *text);
 void write_window(WINDOW *win, int x, int y, const char *text);
@@ -34,6 +39,12 @@ int main() {
   sleep(1);
   refresh();
 
+  //************************************************************************************
+  //Purpose: Creates window with positions and heights and width, printing the
+  //         running threads
+  //Input  : height, width, starty, startx
+  //Output : none
+  //************************************************************************************
   WINDOW *heading_win = newwin(12, 80, 3, 2);
   box(heading_win, 0, 0);
   mvwprintw(heading_win, 1, 2, "ULTIMA 2.0 (Spring 2019)");
@@ -60,6 +71,13 @@ int main() {
   cbreak();
   noecho();
 
+
+  //************************************************************************************
+  //Purpose: Makes thread 1,2 and 3 start running then blocks the execution for a
+  //         milisecond certain time. Afterwards function suspends execution of the
+  //         calling thread until the target thread terminates, unless the target thread
+  //         has already terminated.
+  //************************************************************************************
   sched.create_task(&t1, run_task_window, t1_win, "Thread 1", MyScheduler::RUNNING);
   sleep(1);
   sched.create_task(&t2, run_task_window, t2_win, "Thread 2", MyScheduler::RUNNING);
@@ -78,6 +96,11 @@ int main() {
   return(0);
 }
 
+//************************************************************************************
+//Purpose: Creates window with attributes that makes the window scrollable.
+//Input  : height, width, starty, startx
+//Output : win
+//************************************************************************************
 WINDOW *create_window(int height, int width, int starty, int startx) {
   WINDOW *win = newwin(height, width, starty, startx);
   scrollok(win, true);
@@ -87,6 +110,11 @@ WINDOW *create_window(int height, int width, int starty, int startx) {
   return win;
 }
 
+//************************************************************************************
+//Purpose: Writes a text to a window and draws a box followed by refreshing the window.
+//Input  : win, text
+//Output : none
+//************************************************************************************
 void write_window(WINDOW *win, const char *text) {
   wprintw(win, text);
   box(win, 0, 0);
@@ -110,6 +138,12 @@ void display_help(WINDOW *win) {
   write_window(win, 7, 1, "d= dump");
 }
 
+
+//************************************************************************************
+//Purpose: prints to the window the runnings tasks by
+//Input  : *args
+//Output : none
+//************************************************************************************
 void* run_task_window(void *args) {
   MyScheduler::TCB* process = (MyScheduler::TCB*)args;
   int tid = process->tid;
@@ -145,6 +179,12 @@ void* run_task_window(void *args) {
   }
 }
 
+//************************************************************************************
+//Purpose: runs window by providing functionality for the console window by reading
+//        the input and writing the corresponding output.
+//Input  : height, width, starty, startx
+//Output : none
+//************************************************************************************
 void* run_console_window(void *args) {
   MyScheduler::TCB* process = (MyScheduler::TCB*)args;
   int tid = process->tid;
@@ -157,6 +197,7 @@ void* run_console_window(void *args) {
   char buf[256];
   int input = ERR;
 
+    
   while (true) {
     if (process->state == MyScheduler::RUNNING) {
       

@@ -11,7 +11,8 @@
 
 using namespace std;
 
- mutex mtx;
+mutex mtx;
+MySemaphore.obj;
 
 //************************************************************************************
 //Purpose: Assigns the pointer to dump window.
@@ -19,8 +20,8 @@ using namespace std;
 //Output : none
 //************************************************************************************
 void MySemaphore::set_dump_win(WINDOW *win) {
-  dump_window = win;
-  Scheduler->setDumpWindow(win);
+    dump_window = win;
+    Scheduler->setDumpWindow(win);
 }
 
 //************************************************************************************
@@ -39,18 +40,18 @@ void MySemaphore::set_sched_ptr(MyScheduler *ptr) {
 //Output  : none
 //************************************************************************************
 void MySemaphore::down(int Tid) {
-
-    if(sema_value == 1)
+    
+    if(obj.sema_value() == 1)
     {
-        sema_value = 0;
+        obj.sema_value(0);
         mtx.lock();
-
+        
     }
     else
     {
-      Scheduler->yield(Tid);
-      sema_queue.enqueue(Tid);
-
+        Scheduler->yield(Tid);
+        sema_queue.enqueue(Tid);
+        
     }
 }
 
@@ -63,13 +64,13 @@ void MySemaphore::down(int Tid) {
 void MySemaphore::up() {
     if(!sema_queue.isEmpty())
     {
-	int *intptr = sema_queue.dequeue();
-	if (intptr)
-	  Scheduler->change_state(*intptr, MyScheduler::READY);
+        int *intptr = sema_queue.dequeue();
+        if (intptr)
+            Scheduler->change_state(*intptr, MyScheduler::READY);
     }
     else
     {
-        sema_value = 1;
+        obj.sema_value(1);
     }
     mtx.unlock();
 }
@@ -81,39 +82,34 @@ void MySemaphore::up() {
 //************************************************************************************
 void MySemaphore::dump(int level) {
     if (dumping)
-	return;
-
+        return;
+    
     states.clear();
-
+    
     MyScheduler::TCB *process;
-    for (int i = 0; i < Scheduler->process_table.getLength(); i++) {
-	process = Scheduler->process_table.at(i);
-	states.insert(*process, states.getLength());
-	process->state = MyScheduler::BLOCKED;
-    }
-
+    
     dumping = true;
-
+    
     wprintw(dump_window, " \nResource: %s\n", resource_name);
-    wprintw(dump_window, " Sema Value: %d\n", sema_value);
-
+    wprintw(dump_window, " Sema Value: %d\n", obj.sema_value());
+    
     MyQueue<int> tempQ;
     int *intptr;
-
+    
     wprintw(dump_window, " Sema Queue: \n");
-
+    
     if (!sema_queue.isEmpty()) {
-      intptr = sema_queue.dequeue();
-      tempQ.enqueue(*intptr);
-      wprintw(dump_window, "%d", *intptr);
-
-      for(int i = 0 ; i < sema_queue.getLength(); i++) {
-	intptr = sema_queue.dequeue();
-	tempQ.enqueue(*intptr);
-        wprintw(dump_window, "-->%d", *intptr);
-      }
+        intptr = sema_queue.dequeue();
+        tempQ.enqueue(*intptr);
+        wprintw(dump_window, "%d", *intptr);
+        
+        for(int i = 0 ; i < sema_queue.getLength(); i++) {
+            intptr = sema_queue.dequeue();
+            tempQ.enqueue(*intptr);
+            wprintw(dump_window, "-->%d", *intptr);
+        }
     }
-
+    
     Scheduler->dump(level);
 }
 
@@ -124,8 +120,9 @@ void MySemaphore::dump(int level) {
 //************************************************************************************
 
 void MySemaphore::un_dump() {
-  for (int i = 0; i < Scheduler->process_table.getLength(); i++)
-    Scheduler->process_table.at(i)->state = states.at(i)->state;
-
-  dumping = false;
+    for (int i = 0; i < Scheduler->process_table.getLength(); i++)
+        Scheduler->process_table.at(i)->state = states.at(i)->state;
+    
+    dumping = false;
 }
+
